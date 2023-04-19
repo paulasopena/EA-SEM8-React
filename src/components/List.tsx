@@ -1,25 +1,28 @@
-import { Sub } from "../models/types"
-import React, { useEffect, useState } from 'react';
+import { Sub } from "../models/types";
+import React, { useState, useEffect } from 'react';
 import service from "../service";
+import { User } from "../models/user";
 
-function MyComponent() {
-  const [users, setUsers] = useState([]);
-
+interface Props {
+    users: Array<User>
+}   
+const List= ({users}: Props) => {
+  const [userss, setUsers] = useState([]);
   useEffect(() => {
-    service.getUsers()
-      .then(data => setUsers(data))
-      .catch(error => console.error(error));
+    const fetchUsers = async () => {
+      const response = await fetch('http://localhost:4002/users');
+      const data = await response.json();
+      setUsers(data);
+    };
+    fetchUsers();
   }, []);
-
   return (
-    <div>
-      <h1>Lista de usuarios</h1>
-      <ul>
-        {users.map(user => (
-          <li key={user.name}>{user.surname}</li>
-        ))}
-      </ul>
-    </div>
+    <ul>
+      {users.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
   );
 }
+export default List
 
